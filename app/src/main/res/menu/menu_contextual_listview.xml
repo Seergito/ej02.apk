@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+		<item
+		android:id="@+id/mc_actualizarPeso"
+		android:title="Actualizar Peso"/>
+		
+		<item
+		android:id="@+id/mc_borrarPeso"
+		android:title="Borrar Peso"/>
+
+</menu>
