@@ -2,6 +2,7 @@ package com.tesdai.pesajes;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -37,7 +38,7 @@ public class DB extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE TABLA_PESO (id INTEGER PRIMARY KEY AUTOINCREMENT,`peso` INT NOT NULL ,`fecha` DATE NOT NULL)");
+        db.execSQL("CREATE TABLE TABLA_PESO (`peso` INT NOT NULL ,`fecha` DATE NOT NULL)");
     }
 
     @Override
@@ -51,7 +52,6 @@ public class DB extends SQLiteOpenHelper {
 
         int kg=p.getPeso();
         String f=p.getFecha();
-
         c.put("peso",kg);
         c.put("fecha",f);
 
@@ -66,8 +66,38 @@ public class DB extends SQLiteOpenHelper {
 
     public Cursor Mostrar(){
         abreDB();
-        Cursor c=db.rawQuery("SELECT id,peso,fecha FROM TABLA_PESO",null);
+        Cursor c=db.rawQuery("SELECT rowid as _id,peso,fecha FROM TABLA_PESO",null);
         return c;
+    }
+
+    public String Filtrar(long row){
+        abreDB();
+        String condicion[]={String.valueOf(row)};
+        Cursor c=db.rawQuery("SELECT rowid as _id,peso,fecha FROM TABLA_PESO WHERE _id=?",condicion);
+        c.moveToFirst();
+        int index=c.getColumnIndex("peso");
+        String r=c.getString(index);
+        return r;
+    }
+
+
+    public void eliminar(long rowid){
+        abreDB();
+        String condicion[]={String.valueOf(rowid)};
+        db.delete("TABLA_PESO","rowid=?",condicion);
+    }
+
+    public void actualizar(long rowid,Peso p){
+        ContentValues c=new ContentValues();
+        int kg=p.getPeso();
+        String f=p.getFecha();
+        c.put("peso",kg);
+        c.put("fecha",f);
+
+        String condicion[]={String.valueOf(rowid)};
+
+        db.update("TABLA_PESO",c,"rowid =?",condicion);
+
     }
 
 }

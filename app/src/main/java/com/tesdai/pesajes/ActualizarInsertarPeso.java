@@ -1,6 +1,7 @@
 package com.tesdai.pesajes;
 // Segunda Activity para Actualizar, Insertar un peso
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -33,15 +34,31 @@ public class ActualizarInsertarPeso extends AppCompatActivity {
 		db=new DB(ActualizarInsertarPeso.this);
 		Intent i=getIntent();
 		String fecha=i.getStringExtra("fecha");
+		long row=i.getLongExtra("row",-1);
+
+		if(row!=-1) {
+			String r=db.Filtrar(row);
+			etkg.setText(r);
+		}
 		Toast.makeText(this, fecha, Toast.LENGTH_SHORT).show();
 		bAceptar.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				int kg=Integer.valueOf(etkg.getText().toString());
-				Peso p =new Peso(kg,fecha);
-				db.insertar(p);
-				setResult(RESULT_OK);
-				finish();
+				if(row==-1){
+					int kg=Integer.valueOf(etkg.getText().toString());
+					Peso p =new Peso(kg,fecha);
+					db.insertar(p);
+					setResult(RESULT_OK);
+					finish();
+				}else{
+					int kg=Integer.valueOf(etkg.getText().toString());
+
+					Peso p=new Peso(kg,fecha);
+					db.actualizar(row,p);
+					setResult(RESULT_OK);
+					finish();
+
+				}
 			}
 		});
 		

@@ -51,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
         db=new DB(MainActivity.this);
         db.abreDB();
 
+        String cols[]={"peso","fecha"};
+        int control[]={R.id.tvPeso,R.id.tvFecha};
+        Cursor c=db.Mostrar();
+        SimpleCursorAdapter sc=new SimpleCursorAdapter(MainActivity.this,R.layout.itemlistview,c,cols,control,0);
+        lv.setAdapter(sc);
     }
 
 
@@ -91,9 +96,18 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.mc_actualizarPeso :
                 // Completar
+                Intent it=new Intent(MainActivity.this,ActualizarInsertarPeso.class);
+                it.putExtra("row",rowid);
+                it.putExtra("fecha",getStringFechaHoraActual());
+                startActivityForResult(it,PETICION_ACTUALIZAR);
                 break;
             case R.id.mc_borrarPeso :
-                // Completar
+                db.eliminar(rowid);
+                Cursor c=db.Mostrar();
+                String cols[]={"peso","fecha"};
+                int controles[]={R.id.tvPeso,R.id.tvFecha};
+                SimpleCursorAdapter sc=new SimpleCursorAdapter(MainActivity.this,R.layout.itemlistview,c,cols,controles,0);
+                lv.setAdapter(sc);
                 break;
         }
 
@@ -112,6 +126,11 @@ public class MainActivity extends AppCompatActivity {
 
         }else{Toast.makeText(this, "DATOS NO INSERTADOS", Toast.LENGTH_SHORT).show();}
         if(requestCode==PETICION_ACTUALIZAR && resultCode==RESULT_OK){
+            Cursor c=db.Mostrar();
+            String cols[]={"peso","fecha"};
+            int control[]={R.id.tvPeso,R.id.tvFecha};
+            SimpleCursorAdapter sc=new SimpleCursorAdapter(MainActivity.this,R.layout.itemlistview,c,cols,control,0);
+            lv.setAdapter(sc);
             Toast.makeText(this, "DATOS ACTUALIZADOS EXITOSAMENTE", Toast.LENGTH_SHORT).show();
         }else{Toast.makeText(this, "DATOS NO ACTUALIZADOS", Toast.LENGTH_SHORT).show();}
     }
